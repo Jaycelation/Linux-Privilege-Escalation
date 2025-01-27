@@ -6,7 +6,7 @@
 - Có 3 bước để khai thác kernel bị outdate:
     - Sử dụng câu lệnh `uname -a`  để biết được phiên bản hiện tại của **kernel**
         
-        ![image.png](image.png)
+        ![image.png](/img/image.png)
         
     - Tìm kiếm mã khai thác **kernel** trên các nền tảng `exploit.db`, `CVE`, … liên quan đến lỗ hổng phần mềm linux
     - Chạy khai thác
@@ -17,11 +17,11 @@
 - Kiểm tra quyền **sudo** của người dùng với câu lệnh `sudo -l`
     - Trong trường hợp này, người dùng **karen** có 3 quyền **sudo** mà không cần nhập mật khẩu là `find`, `less` và `nano`
         
-        ![image.png](image%201.png)
+        ![image.png](/img/image%201.png)
         
     - Với quyền `sudo nano` , karen có thể xem và chỉnh sửa bất cứ file nào trên hệ thống - điều này là hết sức nguy hiểm và có thể dẫn đến leo thang đặc quyền lên `root`
         
-        ![image.png](image%202.png)
+        ![image.png](/img/image%202.png)
         
     - Đoạn mã giúp leo thang đặc quyền lên `root` với quyền `sudo nano`
         
@@ -58,7 +58,7 @@
         
     - Quyền `sudo find` được sử dụng để tìm kiếm các tệp trong hệ thống
         
-        ![image.png](image%203.png)
+        ![image.png](/img/image%203.png)
         
 
 ## Privilege Escalation: SUID
@@ -69,7 +69,7 @@
 - Tìm các tệp có bit **SUID**
     - Sử dụng `find / -type f -perm -04000 -ls 2>/dev/null`
         
-        ![image.png](image%204.png)
+        ![image.png](/img/image%204.png)
         
         → `/` Tìm tất cả các tệp có loại `-type f` file
         
@@ -78,11 +78,11 @@
 - Lợi dụng **SUID** để leo thang đặc quyền
     - Đọc tệp `/etc/shadow`  để dò mật khẩu
         
-        ![image.png](image%205.png)
+        ![image.png](/img/image%205.png)
         
         → Thông qua câu lệnh `find` vừa liệt kê các tệp có bit **SUID**, trong đó có **base64**
         
-        ![image.png](image%206.png)
+        ![image.png](/img/image%206.png)
         
         → Tiến hành khai thác leo thang đặc quyền
         
@@ -91,7 +91,7 @@
         base64 "$LFILE" | base64 --decode
         ```
         
-        ![image.png](image%207.png)
+        ![image.png](/img/image%207.png)
         
         → Câu lệnh giúp đọc nội dung của tệp lưu trong biến `LFILE` (trong trường hợp này là `/etc/shadow`) và mã hóa nó dưới dạng `base64`
         
@@ -104,14 +104,14 @@
 - Kiểm tra **capabilities**
     - Sử dụng câu lệnh `getcap -r / 2>/dev/null` để liệt kê tất cả các tệp trên hệ thống có gán **capabilities** mà không hiển thị lỗi
         
-        ![image.png](image%208.png)
+        ![image.png](/img/image%208.png)
         
         → Tệp `/home/karen/vim` và `/home/ubuntu/view`  có gán **capabilities ,** với khả năng **cap_setuid** (thay đổi UID của tiến trình. Điều này có thể dẫn tới leo thang đặc quyền lên `root` 
         
 - Khai thác leo thang đặc quyền với **capabilities**
     - Tệp `/home/ubuntu/view` đã có đặc quyền **capabilities**, ****do vậy sẽ khai thác từ đó
         
-        ![image.png](image%209.png)
+        ![image.png](/img/image%209.png)
         
         ```bash
         /home/ubuntu/view -c ':py import os; os.setuid(0); os.execl("/bin/sh", "sh", "-c", "reset; exec sh")'
@@ -123,7 +123,7 @@
         
         → `reset` và `exec sh` sẽ giúp khởi chạy 1 shell mới
         
-        ![image.png](image%2010.png)
+        ![image.png](/img/image%2010.png)
         
 
 ## Privilege Escalation: Cron Jobs
@@ -136,7 +136,7 @@
     - Mã độc (payload) có thể là một **reverse shell** hoặc một lệnh nào đó để giành quyền kiểm soát hệ thống với quyền root.
     - Xem **crontab** bằng lệnh `cat /etc/crontab`
         
-        ![image.png](image%2011.png)
+        ![image.png](/img/image%2011.png)
         
         → Có một số tệp có khả năng bị khai thác như 
         
@@ -149,21 +149,21 @@
         
     - Chỉnh sửa 1 chút ở tệp `/home/karen/backup.sh`
         
-        ![image.png](image%2012.png)
+        ![image.png](/img/image%2012.png)
         
         → Chỉnh sửa để tệp này thực thi 1 revershell
         
-        ![image.png](image%2013.png)
+        ![image.png](/img/image%2013.png)
         
     - Mở trình **revershell**
         
-        ![image.png](image%2014.png)
+        ![image.png](/img/image%2014.png)
         
     - Thực thi file `./backup.sh` và bắt đầu khai thác trên máy **Attacker**
         
-        ![image.png](image%2015.png)
+        ![image.png](/img/image%2015.png)
         
-        ![image.png](image%2016.png)
+        ![image.png](/img/image%2016.png)
         
 
 ## Privilege Escalation: PATH
@@ -172,7 +172,7 @@
 - Kịch bản leo thang đặc quyền
     - Một script (được gọi là `path`) cố gắng chạy một chương trình tên là `thm` mà không sử dụng đường dẫn tuyệt đối.
         
-        ![image.png](image%2017.png)
+        ![image.png](/img/image%2017.png)
         
         → Setup biến `$PATH` 
         
@@ -188,13 +188,13 @@
         /bin/bash
         ```
         
-        ![image.png](image%2018.png)
+        ![image.png](/img/image%2018.png)
         
         → Khi thực thi, nó mở một shell bash. Tuy nhiên, shell này chạy với quyền `root`, cho phép thực hiện bất kỳ lệnh nào với đặc quyền cao nhất.
         
     - Sau đó chạy file tại `/home/murdoch` hay bất cứ đâu, chương trình sẽ thực thi tại `/tmp` trước
         
-        ![image.png](image%2019.png)
+        ![image.png](/img/image%2019.png)
         
 
 ## Privilege Escalation: NFS
@@ -208,7 +208,7 @@
 - Quy trình khai thác
     - Xem
         
-        ![image.png](image%2020.png)
+        ![image.png](/img/image%2020.png)
         
     - Liệt kê các thư mục chia sẻ
         
@@ -216,22 +216,22 @@
         showmount -e IP_ĐÍCH
         ```
         
-        ![image.png](image%2021.png)
+        ![image.png](/img/image%2021.png)
         
         → có 3 thư mục chia sẻ là `/home/ubuntu/sharefolder` , `/tmp` và `/home/backup`
         
     - Gắn kết (mount) thư mục chia sẻ: Khi tìm thấy một thư mục chia sẻ có tùy chọn `no_root_squash` và có quyền ghi, ta có thể gắn kết thư mục đó vào máy tấn công
         
-        ![image.png](image%2022.png)
+        ![image.png](/img/image%2022.png)
         
     - Tạo một file khai thác trên thư mục share
         
-        ![image.png](image%2023.png)
+        ![image.png](/img/image%2023.png)
         
         → Thực thi và cấp quyền cho file
         
-        ![image.png](image%2024.png)
+        ![image.png](/img/image%2024.png)
         
     - Trên máy đích, chỉ cần thực thi file `code` là đã có thể leo thang đặc quyền lên `root`
         
-        ![image.png](image%2025.png)
+        ![image.png](/img/image%2025.png)
